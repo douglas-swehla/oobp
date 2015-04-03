@@ -1,0 +1,208 @@
+http://dirk.rave.org/batcoll.all
+http://dirk.rave.org/chap9.txt
+------------------------------
+9. Object Oriented Programming
+------------------------------
+
+... is possible. In this simple batch extension, classes and objects
+are stored in an elaborate directory structure. The internal state of
+each object is kept on disk, so there is no need to use separate
+databases for permanent data storage. Develop your classes from the
+command line, and use 'call create', 'call kill' and 'call send' from
+ordinary batch files to use objects.
+
+First I'll demonstrate the functions; the implementation follows:
+
+C:\>md aproject
+C:\>cd aproject
+C:\APROJECT>init                           [make necessary subdirectories]
+C:\APROJECT>class man                      [define class man]
+C:\APROJECT>static man name                [declare static variable for man]
+C:\APROJECT>method man set-name            [edit method for man]
+  {in the editor type SET NAME=%1 %2 %3 %4 %5}
+C:\APROJECT>method man get-name
+  {in the editor type SET RESULT=%NAME%}
+C:\APROJECT>method man prt-name
+  {in the editor type ECHO.%NAME%}
+C:\APROJECT>create man John                [create a test instance of man...] 
+C:\APROJECT>send John set-name John Van Halen                [... and use it]
+C:\APROJECT>create man Fred
+C:\APROJECT>send Fred set-name Fred Ford
+C:\APROJECT>send John prt-name
+John Van Halen                             [it works !]
+C:\APROJECT>send Fred prt-name
+Fred Ford
+C:\APROJECT>class employee man             [define a subclass of man]
+C:\APROJECT>static employee salary         [extra static variable]
+C:\APROJECT>method employee set-sal        [extra methods; it is also
+                                              possible to override
+                                              methods of the superclass]
+  ...
+C:\APROJECT>create employee Bill
+C:\APROJECT>send Bill set-name Bill Buddy  [use an inherited method] 
+  ...
+
+METHOD.BAT assumes that there is an editor named EDIT, which takes a file 
+name as its command line argument, in a directory of the system path.
+Class, object, method and (static) variable names are restricted to eight 
+characters. Use tree /f to get a good idea of how the objects and classes 
+are represented on disk.
+
+WARNING: This implementation does no error checking, which makes the 
+structure of the programs very clear; but when using them, an infinite 
+loop is only a typo away.
+
+
+A. User functions:
+
+INIT.BAT
+
+@echo off
+mkdir classes
+mkdir objects
+
+CLASS.BAT
+
+@echo off
+mkdir classes\%1
+mkdir classes\%1\methods
+mkdir classes\%1\statics
+if [%2]==[] goto end
+rem > classes\%1\%2
+xcopy classes\%2\statics\*.* classes\%1\statics > nul
+:: ordinary copy doesn't copy empty files !
+:end
+
+STATIC.BAT
+
+@echo off
+rem > classes\%1\statics\%2
+
+METHOD.BAT
+
+@echo off
+edit classes\%1\methods\%2.bat
+
+CREATE.BAT
+
+@echo off
+set _class=%1
+set _object=%2
+cd classes\%_class%\statics
+for %%a in (*) do set %%a=(nil)
+cd ..\..\..
+call save
+cd classes\%_class%\statics
+for %%a in (*) do set %%a=
+cd ..\..\.. 
+set _object=
+set _class=
+
+KILL.BAT
+
+@echo off
+del objects\%1.bat
+
+SEND.BAT
+
+@echo off
+if [%_object%]==[] goto no-saving
+call push %_object%
+call save
+:no-saving
+set _object=%1
+set _parms=%2
+:loop
+shift
+if not [%2]==[] set _parms=%_parms% %2
+if not [%3]==[] goto loop
+call restore
+call methods %_parms%
+call save
+set _object=
+set _parms=
+cd classes\%_class%\statics
+for %%a in (*) do set %%a=
+cd ..\..\..
+set _class=
+call pop
+if [%_object%]==[] goto no-restoring
+call restore
+:no-restoring
+
+B. Internal procedures:
+
+SAVE.BAT
+
+echo set _class=%_class%>objects\%_object%.bat
+cd classes\%_class%\statics
+for %%a in (*.*) do echo call save-sub %%a %%%%a%% >> ..\..\..\temp.bat
+cd ..\..\..
+for %%a in (call del) do %%a temp.bat
+
+SAVE-SUB.BAT
+
+set _varname=%1
+set _to-save=%2
+:loop
+shift
+if not [%2]==[] set _to-save=%_to-save% %2
+if not [%2]==[] goto loop
+echo set %_varname%=%_to-save%>>objects\%_object%.bat
+set _to-save=
+set _varname=
+
+METHODS.BAT
+
+set _searchclass=%_class%
+set _method=%1
+set _mparms=%2
+:parmloop
+shift
+if not [%2]==[] set _mparms=%_mparms% %2
+if not [%2]==[] goto parmloop
+:loop
+if not exist classes\%_searchclass%\methods\%_method%.bat goto next
+call classes\%_searchclass%\methods\%_method% %_mparms%
+goto end
+:next
+cd classes\%_searchclass%
+for %%a in (*) do set _searchclass=%%a
+cd ..\..
+goto loop
+:end 
+set _searchclass=
+set _method=
+set _mparms=
+
+RESTORE.BAT
+
+objects\%_object%.bat
+
+PUSH.BAT
+
+@echo off
+set to-push=%1
+:loop
+shift
+if not [%1]==[] set to-push=%to-push% %1
+if not [%1]==[] goto loop
+echo set _object=%to-push%>_tmp
+if exist _stack type _stack>>_tmp
+if exist _stack del _stack
+ren _tmp _stack
+set to-push=
+
+POP.BAT
+
+@echo off
+set _object=
+if not exist _stack goto end
+copy _stack _tmp.bat > nul
+echo 1,1d;e | edlin _stack > nul
+echo 2,65500d;e | edlin _tmp.bat > nul
+call _tmp
+for %%a in (_tmp.bat _tmp.bak _stack.bak) do del %%a
+:end
+
+I call this OOBL -- Object Oriented Batch Language.

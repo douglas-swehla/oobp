@@ -1,0 +1,5 @@
+This is the first line of text. 
+This is the second line of text. 
+quit 
+This is the second test. 
+This is the second line of the second test. It is really long, longer than the 80-character width of the command prompt window. In fact, it's a whole paragraph - how about that! The main thing to note is that the final line shouldn't contain the word "quit", since that is treated as a command by the script. 

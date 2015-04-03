@@ -1,0 +1,1 @@
+set salary=%1 
