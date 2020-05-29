@@ -1,0 +1,23 @@
+<html><body>
+<h1>Miscellaneous</h1>
+
+<p>The PHP PSR4 standard addresses autoloaders, and describes, to some degree, how a projects directory structure should be set up. The autoloader is used to translate fully qualified (namespaced) classes into directory paths.</p>
+
+<p>PHP classes, according to PSR4, are contained in .php files, and are limited to one per file. This supports the idea of one class per .bat file.</p>
+
+<p>A fully qualified PHP class name is in the form "\namespaceName\sub-namespaceName\className", where "\sub-namespaceName" is optional. The "namespaceName" part will typically be the application or vendor name, and maps to one or more file system directories that may (and probably will) look nothing like "namespace".</p>
+
+prefix: myProject
+folder: C:\Users\Douglas\Documents\oop\batch\myProject\class\animal\mammal\
+folder: C:\Users\Douglas\Documents\oop\batch\myProject\class\animal\reptile\
+
+sub-namespaces should map to subdirectories.
+The class name is the filename portion of a batch file.
+
+[myProject/cow] expands to ["C:\Users\Douglas\Documents\oop\batch\myProject\class\animal\mammal\cow.bat"] and would be used to create a new object of class "cow" that inherits from classes "mammal" and "animal".
+
+[myProject/gecko] expands to ["C:\Users\Douglas\Documents\oop\batch\myProject\class\animal\reptile\gecko.bat"] and would be used to create a new object of class "gecko" that inherits from classes "reptile" and "animal".
+
+<p>When language keywords are not in place, and/or if autoloading or namespaces are not yet implemented, references to classes should refer to them as files. The normal rules for file references (by name in same dir, relative path, absolute path) apply.</p>
+
+</body></html>

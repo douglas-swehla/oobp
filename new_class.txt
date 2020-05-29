@@ -1,0 +1,19 @@
+:: Object new class
+call %*
+exit /b
+
+:init ObjectID
+set 
+
+:new class
+call :getMaxObjectID
+set /a newObjectID=%maxObjectID%+1
+set %newObjectID%=%~1
+goto :eof
+
+:getMaxObjectID
+set maxObjectID=57
+goto :eof
+
+
+⍝

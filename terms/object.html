@@ -1,0 +1,105 @@
+<h1>object</h1>
+
+<p>A named combination of values and associated actions that can be taken in respect to those values. Can be built from scratch, or created from a class or a prototype.</p>
+
+<p>Bob Jones was born on March 3rd, 1987. He is five feet, 10 inches tall.</p>
+
+<p>In the console, we can type the following:
+<code><pre>
+set "nickname=Bob"
+set "firstname=Robert"
+set "lastname=Jones"
+set /a birthmonth=3
+set /a birthday=3
+set /a birthyear=1987
+set "sex=male"
+set /a height=70
+</pre></code>
+(Describe how to open CMD.EXE. Discuss capitalization, the <code>/A</code> flag, and treatment of quotes and spaces.)
+</p>
+
+<p>The variables are now set, and available for reference. They will remain available until they are manually cleared, or until the instance of CMD.EXE containing them exits.
+<code><pre>
+echo Bob's first name is %firstname%.
+echo Bob's last name is %lastname%.
+echo Bob's nickname is %nickname%.
+echo Bob's birth year is %birthyear%.
+echo Bob's birth month is %birthmonth%.
+echo Bob's birth day %birthday%.
+echo Bob's height is %height%.
+</pre></code>
+</p>
+
+<p>We can combine them in interesting ways.
+<code><pre>
+echo Bob's full name is %firstname% %lastname%.
+echo Bob's birthdate is %birthmonth%/%birthday%/%birthyear%.
+echo Bob's height is %height% inches.
+echo %nickname%'s real name is %firstname% %lastname%. He was born on %birthmonth%/%birthday%/%birthyear%, and he is %height%" tall.
+</pre></code>
+</p>
+
+<p>If we want to do describe Bob again, but without so much typing, we can save all those <code>ECHO</code> commands into a batch file, and run that instead. We'll call the batch file <code>DescribeBob.bat</code>, and run it by entering its name at the command prompt.
+<code><pre>
+DescribeBob.bat
+</pre></code>
+</p>
+
+<p>The variable names used in the batch refer to the values that we set earlier via the console. Those values exist only in that one console instance, and only until we close the window. That means that if we try to run <code>DescribeBob.bat</code> after closing this window, or run it in a different console window, it won't work unless we set all those values again.
+<code><pre>
+DescribeBob.bat
+</pre></code>
+</p>
+
+<p>We can save more time by putting all the <code>SET</code> commands into another batch file. We'll call this one <code>CreateBob.bat</code>, and run it prior to trying to use <code>DescribeBob.bat</code>. You could get the same effect by putting the <code>SET</code> commands into <code>DescribeBob.bat</code>, before the <code>ECHO</code> commands, but then every time you ran <code>DescribeBob.bat</code>, you'd be setting all the values all over again. This way, we can create Bob once, and then describe him as often as we like.
+<code><pre>
+CreateBob.bat
+DescribeBob.bat
+DescribeBob.bat
+DescribeBob.bat
+</pre></code>
+</p>
+
+<p>This is a good time to talk about suppressing output. When you enter a command at the prompt in the console, you naturally see it there because you typed it out. When you run a batch file, CMD.EXE reads in one command line at a time, expands (figures out the meaning of) any variables, executes the command, then displays any resulting output. The default behavior is that each of these steps is displayed in the console. It can be quite tiresome to see <code>ECHO This is %this%.</code>, <code>ECHO That is %that%.</code>, <code>ECHO This is %theOtherThing%.</code>, when what you really want to see is just what gets <code>ECHO</code>ed. To keep the command from displaying, we can put an @ sign in front of it.</p>
+
+<p>Save a copy of <code>CreateBob.bat</code> as <code>CreateBobQuietly.bat</code>. In it, type an <code>@</code> sign in front of each <code>SET</code> command. It is customary to put the sign right next to the command, but you can leave a space (or many spaces) and it will still work.
+<code><pre>
+@set "nickname=Bob"
+@set "firstname=Robert"
+@set "lastname=Jones"
+@set /a birthmonth=3
+@ set /a birthday=3
+@ set /a birthyear=1987
+@ set "sex=male"
+@         set /a height=70
+</pre></code>
+</p>
+
+<p>In a new console window, run <code>CreateBobQuietly.bat<code>. You won't see any of the <code>SET<code> commands get run. The only indication that the process has completed is that the command prompt becomes available again. When it does, run <code>DescribeBob.bat<code>, and you'll see that all the values set by <code>CreateBobQuietly.bat<code> are available for use.
+<code><pre>
+CreateBobQuietly.bat
+DescribeBob.bat
+</pre></code>
+</p>
+
+<p>Instead of suppressing each command individually, we can turn the whole command display feature off and on within the batch file, using ECHO OFF and ECHO ON, respectively. To keep the ECHO OFF command itself from displaying, we prefix it with the @ sign, and then we don't need to use that any more. Note that ECHO OFF doesn't turn off ECHO; ECHO can still be used to send output to the console. This command might have been better named DISPLAYCOMMANDS OFF and DISPLAYCOMMANDS ON.  
+<code><pre>
+@echo off
+echo Bob's first name is %firstname%.
+echo Bob's last name is %lastname%.
+...
+echo %nickname%'s real name is %firstname% %lastname%. He was born on %birthmonth%/%birthday%/%birthyear%, and he is %height%" tall.
+</pre></code>
+</p>
+<p>It is customary to place @echo off at the beginning of a batch file, and not use echo on except for debugging. Placing echo on at the end of a batch file is not only unnecessary, it can potentialy cause problems. When one batch file calls another, the settings that 
+</p>
+
+<p>
+<code><pre>
+</pre></code>
+</p>
+
+<p>
+<code><pre>
+</pre></code>
+</p>

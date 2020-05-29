@@ -1,0 +1,163 @@
+Notes and Thoughts on Development of Object-oriented Batch Programming Language.
+
+CMD doesn't support undefined variables. This could be circumvented by using file name and content to represent variable name and value. An empty file would be a declared but unset variable. Whether we want to support unset variables is another matter. It may be a bad idea, and not worth putting effort into.
+\\...\Project\Objects\ObjectName\vars\varNameFileWithNoExtension
+
+It's okay to use a command to kick off setting a variable value. See Go vs Python vs SQL:
+	var <name> <type> = <value> 
+	var int1 int = 2
+	var int2 int = 3
+	var mySum int = int1 + int2
+	var myArr arr = 2 3 2300 "2,300" "twenty three"
+	var myStr str = Hello world.
+	var myLst lst = thing1 thing2
+vs
+	<name> = <value with formatting indicators>
+	int1 = 2
+	int2 = 3
+	mySum = int1 + int2
+	myArr = [2, 3, 2300, "2,300" "twenty three"]
+	myStr = "Hello world."
+	myLst = (thing1, thing2)
+vs
+	declare int1 int
+	set int1 = 2
+		or
+	declare int1 int = 2 (is basically the same as var)
+	
+Think about whether to indicate variables and comments by one or more reserved characters:
+	@myVar
+	$myVar
+	# Comment
+	/* Multi-line comment */
+	
+Review Derek Banas's "Learn <Language> in One Video" series for an overview of major categories to support, and ways to implement them:
+http://www.d.umn.edu/~gshute/softeng/object-oriented.html
+http://www.jeffknupp.com/blog/2014/06/18/improve-your-python-python-classes-and-object-oriented-programming/
+http://www.cs.utah.edu/~germain/PPS/Topics/oop.html
+	strings
+	math
+	loops
+	if/then/else
+	file handling
+	recursion
+	deferment (Go)
+	interface
+	conversion / casting
+	
+Have option to attach required executables in alternate data stream folders (EXE, BAT).
+
+"Everything Is an Object" (Python)
+Common Functions/Methods:
+\\...\lang\methods\LEN.BAT
+\\...\lang\types\STRING.BAT (call LEN.BAT "%~1")
+	\n (newline)
+	\t (tab)
+	alias (creates new batch that calls existing one: 'alias ass assert' creates ass.bat, which calls assert.bat. Alternately, creates a link to original.)
+	app end (uses set/p hack to add content to end of line, unless newline specified with \n)
+	assert
+	base 	(not sure; used in SSIS C# script component)
+	bat (writes input to batch file, then executes
+	break 	(inserts a break point (echo & pause?) for debugging. Opens new CMD instance where programmer can ask to view values of variables, etc. Watch window can be text file that gets overwritten and reopened.)
+	cast/convert
+	class
+	cmd (passes args to CMD command. Compare to raw.)
+	cont ains
+	copy
+	count
+	debug
+	def ine
+	delete/clear/kill/archive/sleep/wipe/erase
+	defer (wait until parent function completes. good for open/close file or try/catch (recover))
+	edit (Launches preferred text editor. Defaults to Notepad.)
+	end
+	enum erate (similar to alias; creates shorthand for long namespace values: ScriptResult.Success = ScriptResult.Microsoft.SqlServer.Dts.Runtime.DTSExecResult.Success)
+	for (break out variations of for)
+		for
+		forl OR for l OR for lst OR for list
+		forf OR for f OR for set OR for fileset
+		ford OR for d OR for dir OR for directory
+	imp ort
+	index
+	join
+	len gth
+	make
+	max imum
+	min imum
+	object / struct ure
+	override	(not sure, used in C#. Maybe overrides same-name method in parent class?)
+	partial
+	print
+	private (setlocal)
+	public  (no setlocal)
+	raw 	(passes args directly to CMD interpreter)
+	read 	(echoes file content)
+	ref erence 	(indicates passing by reference)
+	replace/substitute
+	restore/revive/wake
+	return (type) Go supports returning multiple values. Need to pick separator.
+	script 	('edit script file lang' creates a file with given name, in an appropriate (system-determined) location, and opens it for editing.)
+	sort
+	split
+	sub
+	super
+	type
+	until
+	val ue
+	var iable (var.bat = call variable.bat)
+	void 	(doesn't return a value; return value not allowed by compiler)
+	while
+
+	
+
+Packages/Modules/Libraries
+		fmt format
+		os
+		math
+		string
+		log
+		net/http (work with WMIC html output?)
+		time
+	
+Types
+	int eger (base8, base10, hex)
+	dec imal
+	str ing
+	arr ay
+	sli ce / vec tor / struct
+	list
+	date
+	time
+	mon ey (Support for different currencies? How does T-SQL money type work?)
+	mat rix
+	map (Go)
+	
+	
+May want to consider writing core methods with VBScript or another Windows scripting language that can be called with cscript.exe. That may grant a lot of flexibility and Windows hooks that basic batch doesn't offer.
+
+At some point in runtime, adjust PATH to look first in lang and project folders.
+OR
+Ensure that all commands are actually interpreted as having full paths.
+
+Running program options:
+	Include header row command in main.bat: 
+	call "\\...\lang\version\interpreter.bat" "%~f0" & exit /b
+	C:\>main.bat
+	
+	Include header comment for version confirmation:
+	#OOBP lang <version>
+	C:\>set "PATH=%PATH%,"\\...\lang\version\oobplang.bat"
+	
+		C:\>oobplang run \\...\project\main.bat	
+		C:\>oobplang compile \\...\project
+		
+		C:\>oobplang (enters interactive mode)
+		oobplang C:\>run main.bat
+		oobplang C:\>compile main.bat
+	
+Use evaluation function (eval.bat) to evaluate right-side expression before assigning to variable. Recurse as neededed to expand nested functions. Return assessed values to parent eval as %returnVal% or something similar. Do a final pass through args string doing any needed math or concatenation before returning value to var.bat for assignment to variable.
+var <name> <type> = eval<expression(s)> [operator] [value(s)]
+var sum2 int = eval sum1 + 5
+
+PowerShell GUIs are a thing. So are WSH GUIs.
+http://www.reddit.com/tb/324sn3 = http://foxdeploy.com/2015/04/10/part-i-creating-powershell-guis-in-minutes-using-visual-studio-a-new-hope/

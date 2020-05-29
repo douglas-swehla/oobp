@@ -1,0 +1,7 @@
+set someBook=book_12
+someBook author
+	someBook --> %someBook% = book_12
+	book_12 --> %book_12% = The Dragonriders of PernAnne McAffrey1993<ISBN>
+	for /f "tokens=2 delims=" %%F in ("The Dragonriders of PernAnne McAffrey1993<ISBN>") do set "author=%%F"
+	@echo %author%
+	

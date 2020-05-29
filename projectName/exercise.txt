@@ -1,0 +1,3 @@
+Find examples of class definitions in different languages, and try to duplicate using batch script. May get best results from languages (like C) that don't natively support OOP. Their roll-your-own approach without built-in syntax could help get a better feel for things.
+
+URLs:

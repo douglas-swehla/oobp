@@ -1,0 +1,75 @@
+OOP and CS Concepts
+
+access control level (public, private, protected, controlled/specified/atomic/directed[user/group directory], exotic[trust certificates, etc.])
+assertion
+assign
+attribute
+behavior
+class
+coding style vs language support
+compiler (Uses BAT2EXE tool to create executable file from interpreter output)
+concatenator (sends interpreter output to single BAT file)
+contract
+controlled access (custom access list - my idea)
+create
+data type (built-in, user-defined)
+dot operator
+evaluation
+factory
+first class -things (members? citizens? objects?)-
+framework
+function
+inheritance
+interface
+interpreter (translates my [syntactical sugar] language into CMD commands)
+encapsulation
+hierarchy membership vs building up
+implementing interface
+kill
+library (math, wmic, sqlcmd)
+member
+method
+model-view-controller (MVC)
+multiple inheritance (class, interface)
+MVC: model-view-controller
+namespace
+nasa rules for functions
+new
+object
+  as class instance
+  as prototype clone
+overloading
+overriding
+pause
+persistence
+polymorphism
+private access (self only)
+property
+protected access (class descendants)
+prototype
+public access (any object)
+RDBMS for persistence, and as program (table=class, record=object, function/procedure=method)
+restoring persisted state
+state
+subroutine
+syntactical sugar
+
+
+
+CMD Concepts
+alt data streams
+argument passing
+argument reference by position (%0, %*)
+delayed expansion
+everything as string
+functions not supported
+gui limited, but exists. Could use multiple single-color windows to display create image.
+shell strength is OS operations: files, processes, piping
+subroutine
+piping
+Powershell and VBS/VBA are OO
+redirection
+StackOverflow guy could be great resource for this
+variables inherited by child processes. not available to siblings. 
+  can share values (not memory location) natively using file system or registry (hierarchical db)
+  can add sharing via rdbms using sqlcmd or other db command line utility
